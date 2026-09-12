@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { CIUDADELAS, RIESGO_COLOR } from '../data/ciudadelas.js';
 import { grabacionesDe, hoyISO, resumenDia } from '../data/bitacora.js';
 import BarraSuperior from '../components/BarraSuperior.jsx';
+import CroquisCiudadela from '../components/CroquisCiudadela.jsx';
 import { IcoMapa, IcoCalendario, IcoCamara, IcoDer } from '../components/Icons.jsx';
 import '../styles/ciudadelas.css';
 
@@ -15,6 +16,8 @@ function FilaCiudadela({ cd, resumen }) {
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && abrir()}>
 
       <span className="cdf-codigo">{cd.codigo}</span>
+
+      <CroquisCiudadela ciudadela={cd} />
 
       <div className="cdf-id">
         <b>{cd.nombre}</b>
