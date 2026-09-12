@@ -12,8 +12,9 @@ export default function FeedVideo({ dron, ciudadela }) {
   const [modo, setModo] = useState('rgb');
   const [gimbal, setGimbal] = useState(-60);
 
+  // Zoom 19: se distinguen calles, veredas y vehículos.
   const { tiles, offX, offY } = useMemo(
-    () => mosaico(dron?.posicion || ciudadela.centro),
+    () => mosaico(dron?.posicion || ciudadela.centro, 19),
     [dron?.posicion?.[0], dron?.posicion?.[1], ciudadela.id],
   );
 
@@ -34,10 +35,10 @@ export default function FeedVideo({ dron, ciudadela }) {
         ) : (
           <div
             className="feed-lienzo"
-            style={{ filter: filtro, transform: `translate(${-offX}%, ${-offY}%) scale(${1 + (gimbal + 90) / 260})` }}
+            style={{ filter: filtro, transform: `translate(${-offX}%, ${-offY}%) scale(${1.45 + (gimbal + 90) / 190})` }}
           >
             {tiles.map(([tx, ty]) => (
-              <img key={`${tx}-${ty}`} src={tileURL(tx, ty)} alt="" draggable="false" loading="lazy" />
+              <img key={`${tx}-${ty}`} src={tileURL(tx, ty, 19)} alt="" draggable="false" loading="lazy" />
             ))}
           </div>
         )}

@@ -70,6 +70,15 @@ src/
 
 ## Datos del prototipo
 
-Cuatro ciudadelas de la Vía a Samborondón (Guayas, Ecuador): La Puntilla,
-Entre Ríos, Villa Club y Ciudad Celeste — 1.835 viviendas y 125 cámaras fijas
-enlazadas en total.
+Cuatro ciudadelas reales del Guayas, con centros verificados contra la imagen
+satelital y nombrados por geocodificación inversa de OpenStreetMap:
+
+| Código | Ciudadela | Ubicación |
+|---|---|---|
+| CD1 | Ciudadela Entre Ríos | Vía a Samborondón, Samborondón |
+| CD2 | Ciudadela Los Guayacanes | 2ª Etapa, Tarqui, Guayaquil |
+| CD3 | Urbanización Villa Club | La Aurora, Daule |
+| CD4 | Urbanización La Joya | Etapa Tiara, La Aurora, Daule |
+
+Cada una se modela como un polígono de 460 × 340 m dividido en cuatro sectores
+(A–D) con nivel de riesgo, su geocerca y su flota de drones.

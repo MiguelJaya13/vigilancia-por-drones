@@ -81,7 +81,7 @@ export default function MapaVigilancia({
       container: cont.current,
       style: ESTILO,
       center: ciudadela.centro,
-      zoom: 16.1,
+      zoom: 17.1,
       pitch: 45,
       bearing: -12,
       attributionControl: { compact: true },
@@ -104,7 +104,7 @@ export default function MapaVigilancia({
     marcadores.current.forEach((mk) => mk.remove());
     marcadores.current.clear();
     pintarCiudadela(m, ciudadela, onSeleccionarSector, etiquetasSector);
-    m.flyTo({ center: ciudadela.centro, zoom: 16.1, pitch: 45, bearing: -12, duration: 1200 });
+    m.flyTo({ center: ciudadela.centro, zoom: 17.1, pitch: 45, bearing: -12, duration: 1200 });
   }, [ciudadela.id]);
 
   // --- capas visibles ---

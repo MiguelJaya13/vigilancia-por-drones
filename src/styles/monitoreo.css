@@ -20,7 +20,7 @@
 .hud-centro { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; gap: 12px; }
 .hud-cabecera { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .hud-pie { display: flex; justify-content: center; }
-.hud-derecha { width: 322px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+.hud-derecha { width: 392px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
 
 /* ---- panel de flota (izquierda) ---- */
 .panel-flota { width: 288px; display: flex; flex-direction: column; overflow: hidden; }
@@ -136,7 +136,7 @@
 .feed-head { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-bottom: 1px solid var(--line); }
 .feed-rec { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 800; color: var(--bad); letter-spacing: .08em; }
 .feed-titulo { flex: 1; font-size: 12.5px; }
-.feed-video { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #05080c; }
+.feed-video { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #05080c; }
 .feed-lienzo {
   position: absolute; inset: -50%; margin: auto; width: 200%; height: 200%;
   display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
@@ -216,7 +216,7 @@
 
 /* ---- responsive ---- */
 @media (max-width: 1280px) {
-  .hud-derecha { width: 270px; }
+  .hud-derecha { width: 330px; }
   .panel-flota { width: 250px; }
 }
 @media (max-width: 1024px) {

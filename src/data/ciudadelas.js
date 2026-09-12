@@ -1,47 +1,57 @@
-// Ciudadelas monitoreadas — zona Vía a Samborondón, Guayas, Ecuador.
+// Ciudadelas monitoreadas en Guayas, Ecuador.
+// Centros verificados contra la imagen satelital (tiles Esri z16) y nombrados
+// por geocodificación inversa de OpenStreetMap: caen sobre manzanas
+// urbanizadas, no sobre el río Daule ni el Babahoyo.
 // Las coordenadas son [lng, lat] (orden GeoJSON / MapLibre).
 
-const M = 0.00001; // ~1.1 m en latitud
+const M_POR_GRADO_LAT = 110540;
+const M_POR_GRADO_LNG = 111320;
+
+/** Metros a grados en el punto dado (la longitud se acorta con la latitud). */
+function aGrados(metrosX, metrosY, lat) {
+  return {
+    dLng: metrosX / (M_POR_GRADO_LNG * Math.cos((lat * Math.PI) / 180)),
+    dLat: metrosY / M_POR_GRADO_LAT,
+  };
+}
 
 /** Rectángulo centrado en `c`, de `w` x `h` metros. */
 function rect(c, w, h) {
-  const dx = (w / 2) * M * 1.12; // corrección aprox. de longitud a -2° lat
-  const dy = (h / 2) * M;
+  const { dLng, dLat } = aGrados(w / 2, h / 2, c[1]);
   return [[
-    [c[0] - dx, c[1] - dy],
-    [c[0] + dx, c[1] - dy],
-    [c[0] + dx, c[1] + dy],
-    [c[0] - dx, c[1] + dy],
-    [c[0] - dx, c[1] - dy],
+    [c[0] - dLng, c[1] - dLat],
+    [c[0] + dLng, c[1] - dLat],
+    [c[0] + dLng, c[1] + dLat],
+    [c[0] - dLng, c[1] + dLat],
+    [c[0] - dLng, c[1] - dLat],
   ]];
 }
 
 /** Divide el rectángulo de la ciudadela en 4 sectores (cuadrantes). */
 function construirSectores(c, w, h, defs) {
   const qw = w / 2, qh = h / 2;
-  const dx = (qw / 2) * M * 1.12;
-  const dy = (qh / 2) * M;
+  const { dLng, dLat } = aGrados(qw / 2, qh / 2, c[1]);
   const centros = [
-    [c[0] - dx, c[1] + dy], // A: noroeste
-    [c[0] + dx, c[1] + dy], // B: noreste
-    [c[0] - dx, c[1] - dy], // C: suroeste
-    [c[0] + dx, c[1] - dy], // D: sureste
+    [c[0] - dLng, c[1] + dLat], // A: noroeste
+    [c[0] + dLng, c[1] + dLat], // B: noreste
+    [c[0] - dLng, c[1] - dLat], // C: suroeste
+    [c[0] + dLng, c[1] - dLat], // D: sureste
   ];
   return defs.map((d, i) => ({
     ...d,
     centro: centros[i],
-    poligono: rect(centros[i], qw - 40, qh - 40),
+    poligono: rect(centros[i], qw - 26, qh - 26),
   }));
 }
 
 /** Ruta de patrullaje: perímetro interior del sector. */
 function rutaPatrulla(centro, w, h) {
-  const dx = (w / 2) * M * 1.12, dy = (h / 2) * M;
+  const { dLng, dLat } = aGrados(w / 2, h / 2, centro[1]);
   return [
-    [centro[0] - dx, centro[1] - dy],
-    [centro[0] + dx, centro[1] - dy],
-    [centro[0] + dx, centro[1] + dy],
-    [centro[0] - dx, centro[1] + dy],
+    [centro[0] - dLng, centro[1] - dLat],
+    [centro[0] + dLng, centro[1] - dLat],
+    [centro[0] + dLng, centro[1] + dLat],
+    [centro[0] - dLng, centro[1] + dLat],
   ];
 }
 
@@ -54,7 +64,7 @@ function build(cfg) {
       ...d,
       ciudadela: id,
       base: centro,
-      ruta: rutaPatrulla(sec.centro, ancho / 2 - 90, alto / 2 - 90),
+      ruta: rutaPatrulla(sec.centro, ancho / 2 - 70, alto / 2 - 70),
       posicion: sec.centro,
     };
   });
@@ -71,16 +81,16 @@ export const CIUDADELAS = [
   build({
     id: 'cd1',
     codigo: 'CD1',
-    nombre: 'Ciudadela La Puntilla',
-    direccion: 'Km 1.5 Vía Samborondón',
-    centro: [-79.8865, -2.1452],
-    ancho: 900, alto: 700,
+    nombre: 'Ciudadela Entre Ríos',
+    direccion: 'Vía a Samborondón · Samborondón',
+    centro: [-79.867859, -2.150069],
+    ancho: 460, alto: 340,
     camaras: 24, viviendas: 312,
     sectoresDef: [
-      { id: 'A', nombre: 'Entrada principal', riesgo: 'medio' },
-      { id: 'B', nombre: 'Área social', riesgo: 'bajo' },
-      { id: 'C', nombre: 'Perímetro sur', riesgo: 'alto' },
-      { id: 'D', nombre: 'Parqueaderos', riesgo: 'medio' },
+      { id: 'A', nombre: 'Garita principal', riesgo: 'medio' },
+      { id: 'B', nombre: 'Área social y club', riesgo: 'bajo' },
+      { id: 'C', nombre: 'Ribera del río', riesgo: 'alto' },
+      { id: 'D', nombre: 'Manzanas 12-20', riesgo: 'medio' },
     ],
     dronesDef: [
       { id: 'CD1-D1', nombre: 'HalcónCat', modelo: 'DJI Matrice 30T', bateria: 72, sector: 'A', estado: 'En vuelo' },
@@ -93,16 +103,16 @@ export const CIUDADELAS = [
   build({
     id: 'cd2',
     codigo: 'CD2',
-    nombre: 'Ciudadela Entre Ríos',
-    direccion: 'Km 6.5 Vía Samborondón',
-    centro: [-79.8722, -2.1291],
-    ancho: 1100, alto: 800,
+    nombre: 'Ciudadela Los Guayacanes',
+    direccion: '2ª Etapa · Tarqui, Guayaquil',
+    centro: [-79.889832, -2.117133],
+    ancho: 460, alto: 340,
     camaras: 31, viviendas: 448,
     sectoresDef: [
-      { id: 'A', nombre: 'Garita norte', riesgo: 'bajo' },
-      { id: 'B', nombre: 'Club house', riesgo: 'bajo' },
-      { id: 'C', nombre: 'Ribera del río', riesgo: 'alto' },
-      { id: 'D', nombre: 'Manzanas 8-14', riesgo: 'medio' },
+      { id: 'A', nombre: 'Ingreso Paseo 20', riesgo: 'medio' },
+      { id: 'B', nombre: 'Parque central', riesgo: 'bajo' },
+      { id: 'C', nombre: 'Zona comercial', riesgo: 'alto' },
+      { id: 'D', nombre: 'Perímetro sur', riesgo: 'medio' },
     ],
     dronesDef: [
       { id: 'CD2-D1', nombre: 'Guardián 01', modelo: 'DJI Matrice 30T', bateria: 88, sector: 'A', estado: 'En vuelo' },
@@ -114,10 +124,10 @@ export const CIUDADELAS = [
   build({
     id: 'cd3',
     codigo: 'CD3',
-    nombre: 'Ciudadela Villa Club',
-    direccion: 'Km 12 Vía Samborondón',
-    centro: [-79.8561, -2.0962],
-    ancho: 1300, alto: 900,
+    nombre: 'Urbanización Villa Club',
+    direccion: 'La Aurora · Daule',
+    centro: [-79.895325, -2.040279],
+    ancho: 460, alto: 340,
     camaras: 42, viviendas: 690,
     sectoresDef: [
       { id: 'A', nombre: 'Etapa Cielo', riesgo: 'medio' },
@@ -137,15 +147,15 @@ export const CIUDADELAS = [
   build({
     id: 'cd4',
     codigo: 'CD4',
-    nombre: 'Ciudadela Ciudad Celeste',
-    direccion: 'Km 4.5 Vía Samborondón',
-    centro: [-79.8641, -2.1181],
-    ancho: 1000, alto: 750,
+    nombre: 'Urbanización La Joya',
+    direccion: 'Etapa Tiara · La Aurora, Daule',
+    centro: [-79.917297, -2.034789],
+    ancho: 460, alto: 340,
     camaras: 28, viviendas: 385,
     sectoresDef: [
-      { id: 'A', nombre: 'Ingreso vehicular', riesgo: 'medio' },
+      { id: 'A', nombre: 'Garita Tiara', riesgo: 'medio' },
       { id: 'B', nombre: 'Áreas verdes', riesgo: 'bajo' },
-      { id: 'C', nombre: 'Zona comercial', riesgo: 'alto' },
+      { id: 'C', nombre: 'Centro comercial', riesgo: 'alto' },
       { id: 'D', nombre: 'Perímetro oeste', riesgo: 'medio' },
     ],
     dronesDef: [
