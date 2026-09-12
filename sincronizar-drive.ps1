@@ -6,7 +6,7 @@
 $origen  = $PSScriptRoot
 $destino = "G:\Mi unidad\sistema de seguridad\sistema de monitoreo"
 
-robocopy $origen $destino /E /XD node_modules dist .git /XF package-lock.json /NFL /NDL /NJH /NJS /R:1 /W:1
+robocopy $origen $destino /E /XD node_modules dist .git build .dart_tool .gradle .idea /XF package-lock.json /NFL /NDL /NJH /NJS /R:1 /W:1
 
 if ($LASTEXITCODE -lt 8) {
     Write-Host "Sincronizado en $destino" -ForegroundColor Green

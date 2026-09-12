@@ -3,3 +3,11 @@ dist
 .DS_Store
 *.local
 .env
+
+# Flutter (appmovil/vigidrone)
+build/
+.dart_tool/
+.flutter-plugins-dependencies
+*.iml
+.gradle/
+local.properties
