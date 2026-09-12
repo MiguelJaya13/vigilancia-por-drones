@@ -1,10 +1,9 @@
 import { RIESGO_COLOR } from '../data/ciudadelas.js';
-import { DRON_SVG_INTERNO } from './IconoDron.jsx';
 
 // Croquis cuadrado de la ciudadela: el recinto, sus cuatro sectores y los
 // drones recorriendo la secuencia de patrullaje de su propio sector.
-// Cada ícono lleva el código del dron, de modo que el croquis y la ficha
-// de la flota digan lo mismo: el dron del sector B se ve en el sector B.
+// Cada dron es un punto rojo rotulado con su código, de modo que el croquis
+// y la ficha de la flota digan lo mismo: el dron del sector B se ve en B.
 
 // Límites de cada cuadrante en el viewBox (0-100).
 const CUADRANTE = { A: [8, 8], B: [56, 8], C: [8, 56], D: [56, 56] };
@@ -114,31 +113,30 @@ export default function CroquisCiudadela({ ciudadela, tamano = 92 }) {
       <circle cx="50" cy="50" r="3.4" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="1" />
       <circle cx="50" cy="50" r="1.3" fill="rgba(255,255,255,.6)" />
 
+      {/* Cada dron es un punto rojo con su código al lado. A este tamaño el
+          dibujo del cuadricóptero quedaba en 9 px con trazos de menos de un
+          píxel: no se distinguía. El cuadricóptero se usa en el mapa, donde
+          sí hay espacio. */}
       {plan.map((p) => {
-        const motion = (extra) => (
-          <animateMotion
-            dur={`${p.dur}s`} begin={`${p.inicio}s`} repeatCount="indefinite"
-            path={p.ruta} calcMode="linear" keyPoints={keyPoints} keyTimes={keyTimes}
-            {...extra}
-          />
-        );
+        // En la mitad derecha el rótulo va a la izquierda, para no salirse.
+        const derecha = p.sector === 'B' || p.sector === 'D';
         return (
           <g key={p.id} className="croquis-dron">
             <title>{p.nombre} · sector {p.sector}</title>
-
-            {/* el ícono gira hacia el sentido de vuelo */}
-            <g>
-              {motion({ rotate: 'auto' })}
-              {/* el dibujo apunta al norte; +90° lo alinea con el eje de avance */}
-              <g transform="rotate(90) translate(-5,-5) scale(0.4167)"
-                dangerouslySetInnerHTML={{ __html: DRON_SVG_INTERNO }} />
-            </g>
-
-            {/* el rótulo viaja con el dron pero se mantiene horizontal */}
-            <g>
-              {motion()}
-              <text className="croquis-rotulo" x="0" y="-7" textAnchor="middle">{p.codigo}</text>
-            </g>
+            <animateMotion
+              dur={`${p.dur}s`} begin={`${p.inicio}s`} repeatCount="indefinite"
+              path={p.ruta} calcMode="linear" keyPoints={keyPoints} keyTimes={keyTimes}
+            />
+            <circle r="5.4" fill="#ef4444" opacity=".22">
+              <animate attributeName="r" values="4;7;4" dur="1.9s" repeatCount="indefinite" />
+            </circle>
+            <circle r="2.9" fill="#ef4444" stroke="#0b0f14" strokeWidth="0.9" />
+            <text
+              className="croquis-rotulo"
+              x={derecha ? -5.6 : 5.6}
+              y="2.2"
+              textAnchor={derecha ? 'end' : 'start'}
+            >{p.codigo}</text>
           </g>
         );
       })}
