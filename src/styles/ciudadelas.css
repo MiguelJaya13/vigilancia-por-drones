@@ -1,4 +1,4 @@
-/* ============ Vista general de ciudadelas ============ */
+/* ============ Vista general: lista de ciudadelas ============ */
 
 .pagina {
   height: 100vh; display: flex; flex-direction: column; gap: 12px; padding: 12px;
@@ -8,7 +8,7 @@
     var(--bg);
 }
 
-.cd-main { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 18px; padding: 6px 2px 26px; }
+.cd-main { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 18px; padding: 8px 2px 26px; }
 
 .cd-intro h1 { font-size: 24px; font-weight: 750; letter-spacing: -0.5px; }
 .cd-intro p { margin-top: 5px; color: var(--txt-2); font-size: 13px; }
@@ -20,41 +20,78 @@
 .kpi.warn b { color: var(--warn); }
 .kpi.bad b { color: var(--bad); }
 
-.cd-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+/* ---- lista ---- */
+.cd-lista { overflow: hidden; }
+.cdl-head {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  padding: 14px 18px; border-bottom: 1px solid var(--line);
+}
+.cdl-head b { font-size: 13.5px; }
 
-.cd-card { display: flex; flex-direction: column; overflow: hidden; transition: border-color .18s, transform .18s; }
-.cd-card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
-.cdc-head { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-bottom: 1px solid var(--line); }
-.cdc-codigo {
-  padding: 6px 11px; border-radius: 9px; font-size: 13px; font-weight: 800; letter-spacing: .05em;
+.cd-fila {
+  display: grid; align-items: center; gap: 16px;
+  grid-template-columns: 52px minmax(190px, 1.5fr) 118px auto 108px auto;
+  padding: 15px 18px; cursor: pointer; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  transition: background .15s;
+}
+.cd-fila:last-child { border-bottom: none; }
+.cd-fila:hover { background: rgba(255,255,255,.05); }
+.cd-fila:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.cdf-codigo {
+  width: 52px; height: 52px; border-radius: 13px; display: grid; place-items: center;
+  font-size: 15px; font-weight: 800; letter-spacing: .04em;
   background: linear-gradient(135deg, var(--accent), #3b82f6); color: #04141a;
 }
-.cdc-titulo { flex: 1; min-width: 0; }
-.cdc-titulo b { display: block; font-size: 14px; }
-.cdc-titulo .label { display: block; margin-top: 2px; }
 
-.cdc-mapa { padding: 12px 14px; background: rgba(0,0,0,.28); }
-.cdc-mapa svg { width: 100%; height: 128px; display: block; }
+.cdf-id { min-width: 0; }
+.cdf-id b { display: block; font-size: 14.5px; letter-spacing: -0.2px; }
+.cdf-id .label { display: block; margin-top: 3px; }
 
-.cdc-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); }
-.cdc-stats > div {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 12px 6px; background: var(--panel-solid); color: var(--txt-3);
+.cdf-sectores { display: flex; flex-direction: column; gap: 6px; }
+.cdf-sectores > div { display: flex; gap: 4px; }
+.cdf-sec {
+  width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center;
+  font-size: 10.5px; font-weight: 800; color: #06121a;
 }
-.cdc-stats b { font-size: 15px; font-weight: 700; color: var(--txt); }
-.cdc-stats .alerta b { color: var(--warn); }
-.cdc-stats .alerta svg { color: var(--warn); }
 
-.cdc-pie { display: flex; align-items: center; gap: 8px; padding: 12px 14px; }
-.cdc-horas { margin-left: auto; }
+.cdf-datos { display: grid; grid-template-columns: repeat(4, 78px); gap: 14px; }
+.cdf-dato { display: flex; flex-direction: column; gap: 3px; }
+.cdf-dato b { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+.cdf-dato b em { font-style: normal; font-size: 12px; color: var(--txt-3); font-weight: 600; }
+.cdf-dato.alerta b { color: var(--warn); }
 
-@media (max-width: 1100px) {
+.cdf-estado { justify-self: start; white-space: nowrap; }
+
+.cdf-acciones { display: flex; align-items: center; gap: 8px; justify-self: end; }
+.cdf-flecha { color: var(--txt-3); flex: none; }
+.cd-fila:hover .cdf-flecha { color: var(--accent); }
+
+/* ---- responsive ---- */
+@media (max-width: 1400px) {
+  .cd-fila { grid-template-columns: 52px minmax(170px, 1.3fr) 110px auto auto; }
+  .cdf-datos { grid-template-columns: repeat(4, 68px); gap: 10px; }
+  .cdf-estado { display: none; }
+}
+@media (max-width: 1150px) {
   .cd-kpis { grid-template-columns: repeat(3, 1fr); }
-  .cd-grid { grid-template-columns: 1fr; }
+  .cd-fila {
+    grid-template-columns: 52px 1fr auto; row-gap: 14px;
+    grid-template-areas: 'cod id acc' 'sec sec sec' 'datos datos datos';
+  }
+  .cdf-codigo { grid-area: cod; }
+  .cdf-id { grid-area: id; }
+  .cdf-sectores { grid-area: sec; flex-direction: row; align-items: center; gap: 10px; }
+  .cdf-datos { grid-area: datos; }
+  .cdf-acciones { grid-area: acc; }
 }
-@media (max-width: 640px) {
+@media (max-width: 700px) {
   .cd-kpis { grid-template-columns: repeat(2, 1fr); }
+  .cdf-datos { grid-template-columns: repeat(2, 1fr); }
+  .cdf-acciones { flex-wrap: wrap; justify-content: flex-end; }
   .barra-sup { flex-wrap: wrap; }
   .barra-acc { margin-left: 0; }
   .usuario span { display: none; }
+  .pagina { height: auto; min-height: 100vh; }
 }

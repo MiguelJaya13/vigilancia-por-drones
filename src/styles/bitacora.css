@@ -10,18 +10,6 @@
 .bf-bloque > .label { display: inline-flex; align-items: center; gap: 6px; }
 
 .bf-sectores { display: flex; flex-direction: column; gap: 5px; }
-.bfs-btn {
-  display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px;
-  font-size: 12px; text-align: left; color: var(--txt-2);
-  border: 1px solid transparent; background: rgba(255,255,255,.04); transition: background .15s;
-}
-.bfs-btn:hover { background: rgba(255,255,255,.09); color: var(--txt); }
-.bfs-btn.on { background: rgba(255,255,255,.11); color: var(--txt); border-color: var(--line-strong); }
-.bfs-badge {
-  width: 19px; height: 19px; flex: none; border-radius: 5px; display: grid; place-items: center;
-  font-size: 10px; font-weight: 800; background: var(--c, var(--accent)); color: #06121a;
-}
-
 .bf-tipo { display: flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 12px; cursor: pointer; }
 .bf-tipo input { accent-color: var(--accent); width: 14px; height: 14px; }
 .bf-tipo span:last-of-type { flex: 1; }
@@ -91,7 +79,6 @@
 .rep-ctrl { display: flex; align-items: center; gap: 9px; padding: 11px 13px; flex-wrap: wrap; }
 .rep-play { min-width: 118px; }
 .rep-tiempo { font-size: 11.5px; color: var(--txt-2); }
-.rep-vel { display: flex; gap: 3px; padding: 3px; border-radius: 9px; background: rgba(0,0,0,.4); }
 .rep-desc { margin-left: auto; }
 .rep-meta { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border-top: 1px solid var(--line); flex-wrap: wrap; }
 .rep-detalle { font-size: 12.5px; }

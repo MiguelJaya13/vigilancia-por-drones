@@ -22,42 +22,6 @@
 .hud-pie { display: flex; justify-content: center; }
 .hud-derecha { width: 322px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
 
-/* ---- barra superior ---- */
-.barra-sup { display: flex; align-items: center; gap: 14px; padding: 9px 14px; }
-.marca { display: flex; align-items: center; gap: 9px; }
-.marca-logo {
-  width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
-  background: linear-gradient(135deg, var(--accent), #3b82f6); color: #04141a;
-}
-.marca-txt { font-size: 15px; letter-spacing: -0.2px; }
-.marca-txt b { font-weight: 800; color: var(--accent); }
-
-.cd-switch { display: flex; gap: 4px; padding: 3px; border-radius: 11px; background: rgba(0,0,0,.35); }
-.cds-btn {
-  padding: 6px 13px; border-radius: 8px; font-size: 12px; font-weight: 700;
-  color: var(--txt-2); letter-spacing: .04em; transition: background .15s, color .15s;
-}
-.cds-btn:hover { color: var(--txt); background: rgba(255,255,255,.06); }
-.cds-btn.on { background: var(--accent); color: #04141a; }
-
-.barra-acc { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.icon-btn {
-  position: relative; width: 32px; height: 32px; border-radius: 9px;
-  display: grid; place-items: center; color: var(--txt-2);
-  border: 1px solid transparent; transition: background .15s, color .15s;
-}
-.icon-btn:hover { background: rgba(255,255,255,.07); color: var(--txt); }
-.badge {
-  position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; padding: 0 4px;
-  border-radius: 999px; background: var(--bad); color: #fff;
-  font-size: 10px; font-weight: 700; display: grid; place-items: center;
-  border: 2px solid var(--panel-solid);
-}
-.usuario {
-  display: flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 9px;
-  background: rgba(255,255,255,.05); font-size: 12px; color: var(--txt-2); white-space: nowrap;
-}
-
 /* ---- panel de flota (izquierda) ---- */
 .panel-flota { width: 288px; display: flex; flex-direction: column; overflow: hidden; }
 .pf-tabs { display: flex; border-bottom: 1px solid var(--line); }
@@ -80,7 +44,6 @@
 .pf-buscar .field { padding-left: 32px; }
 .pf-conteo { margin-bottom: 8px; }
 .pf-lista { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; margin: 0 -4px; padding: 0 4px; }
-.pf-vacio { font-size: 12px; color: var(--txt-3); padding: 12px 2px; }
 
 .dron-card {
   width: 100%; text-align: left; padding: 11px; border-radius: 11px;
@@ -195,9 +158,6 @@
 
 .feed-ctrl { display: flex; align-items: center; gap: 11px; padding: 9px 12px; }
 .feed-modos { display: flex; gap: 3px; padding: 3px; border-radius: 9px; background: rgba(0,0,0,.4); }
-.fm-btn { padding: 5px 10px; border-radius: 7px; font-size: 11px; font-weight: 650; color: var(--txt-3); }
-.fm-btn:hover { color: var(--txt); }
-.fm-btn.on { background: rgba(255,255,255,.13); color: var(--txt); }
 .feed-gimbal { flex: 1; display: flex; align-items: center; gap: 8px; }
 .feed-gimbal input { flex: 1; accent-color: var(--accent); }
 .feed-pie { display: flex; gap: 13px; padding: 8px 12px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--txt-2); }

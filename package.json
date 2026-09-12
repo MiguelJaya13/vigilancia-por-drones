@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Sistema de monitoreo y vigilancia por drones para ciudadelas",
+  "description": "FALCOM 360 - Sistema de monitoreo y vigilancia por drones para ciudadelas",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

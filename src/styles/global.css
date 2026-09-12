@@ -111,3 +111,60 @@ select.field option { background: var(--panel-solid); }
 
 .bar { height: 4px; border-radius: 999px; background: rgba(255,255,255,.09); overflow: hidden; }
 .bar > i { display: block; height: 100%; border-radius: 999px; transition: width .6s ease; }
+
+/* ---------- barra superior (compartida por todas las pantallas) ---------- */
+.barra-sup { display: flex; align-items: center; gap: 14px; padding: 9px 14px; }
+.marca { display: flex; align-items: center; gap: 9px; }
+.marca-logo {
+  width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--accent), #3b82f6); color: #04141a;
+}
+.marca-txt { font-size: 15px; letter-spacing: -0.2px; }
+.marca-txt b { font-weight: 800; color: var(--accent); }
+
+.cd-switch { display: flex; gap: 4px; padding: 3px; border-radius: 11px; background: rgba(0,0,0,.35); }
+.cds-btn {
+  padding: 6px 13px; border-radius: 8px; font-size: 12px; font-weight: 700;
+  color: var(--txt-2); letter-spacing: .04em; transition: background .15s, color .15s;
+}
+.cds-btn:hover { color: var(--txt); background: rgba(255,255,255,.06); }
+.cds-btn.on { background: var(--accent); color: #04141a; }
+
+.barra-acc { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  position: relative; width: 32px; height: 32px; border-radius: 9px;
+  display: grid; place-items: center; color: var(--txt-2);
+  border: 1px solid transparent; transition: background .15s, color .15s;
+}
+.icon-btn:hover { background: rgba(255,255,255,.07); color: var(--txt); }
+.badge {
+  position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 999px; background: var(--bad); color: #fff;
+  font-size: 10px; font-weight: 700; display: grid; place-items: center;
+  border: 2px solid var(--panel-solid);
+}
+.usuario {
+  display: flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 9px;
+  background: rgba(255,255,255,.05); font-size: 12px; color: var(--txt-2); white-space: nowrap;
+}
+
+/* ---------- grupos de botones tipo segmento ---------- */
+.fm-btn { padding: 5px 10px; border-radius: 7px; font-size: 11px; font-weight: 650; color: var(--txt-3); }
+.fm-btn:hover { color: var(--txt); }
+.fm-btn.on { background: rgba(255,255,255,.13); color: var(--txt); }
+.rep-vel { display: flex; gap: 3px; padding: 3px; border-radius: 9px; background: rgba(0,0,0,.4); }
+
+/* ---------- selector de sector ---------- */
+.bfs-btn {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px;
+  font-size: 12px; text-align: left; color: var(--txt-2);
+  border: 1px solid transparent; background: rgba(255,255,255,.04); transition: background .15s;
+}
+.bfs-btn:hover { background: rgba(255,255,255,.09); color: var(--txt); }
+.bfs-btn.on { background: rgba(255,255,255,.11); color: var(--txt); border-color: var(--line-strong); }
+.bfs-badge {
+  width: 19px; height: 19px; flex: none; border-radius: 5px; display: grid; place-items: center;
+  font-size: 10px; font-weight: 800; background: var(--c, var(--accent)); color: #06121a;
+}
+
+.pf-vacio { font-size: 12px; color: var(--txt-3); padding: 12px 2px; }

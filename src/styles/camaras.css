@@ -1,0 +1,178 @@
+/* ============ Cámaras fijas: mosaico, visor y reproducción ============ */
+
+.camaras .cam-cuerpo { flex: 1; min-height: 0; display: flex; gap: 12px; }
+
+/* ---- lista lateral ---- */
+.cam-lista { width: 276px; flex: none; display: flex; flex-direction: column; padding: 14px; gap: 11px; }
+.cml-head h1 { font-size: 17px; font-weight: 750; letter-spacing: -0.3px; }
+.cml-head .label { display: block; margin-top: 3px; }
+.cml-buscar { position: relative; color: var(--txt-3); }
+.cml-buscar svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); }
+.cml-buscar .field { padding-left: 32px; }
+.cml-sectores { display: flex; flex-direction: column; gap: 4px; }
+.cml-items { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 3px; margin: 0 -4px; padding: 0 4px; }
+.cml-item {
+  display: flex; align-items: center; gap: 9px; padding: 8px 9px; border-radius: 9px;
+  text-align: left; transition: background .13s;
+}
+.cml-item:hover { background: rgba(255,255,255,.06); }
+.cml-item.on { background: var(--accent-dim); box-shadow: inset 2px 0 0 var(--accent); }
+.cml-txt { flex: 1; min-width: 0; }
+.cml-txt b { display: block; font-size: 12.5px; font-weight: 620; }
+.cml-txt .label { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cml-tipo {
+  font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 5px; background: rgba(255,255,255,.08); color: var(--txt-3);
+}
+
+/* ---- visor ---- */
+.cam-visor { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+
+.cam-barra { display: flex; align-items: center; gap: 12px; padding: 9px 12px; flex-wrap: wrap; }
+.cb-modos, .cb-rejilla { display: flex; align-items: center; gap: 3px; padding: 3px; border-radius: 9px; background: rgba(0,0,0,.4); }
+.cb-rejilla > svg { margin: 0 4px 0 6px; color: var(--txt-3); }
+.cb-fecha { display: flex; align-items: center; gap: 5px; }
+.cb-fecha b { font-size: 12.5px; min-width: 92px; text-align: center; text-transform: capitalize; }
+.cb-der { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ---- mosaico ---- */
+.cam-mosaico { display: grid; gap: 4px; padding: 4px; background: #05080c; }
+.cam-mosaico.g1 { grid-template-columns: 1fr; }
+.cam-mosaico.g4 { grid-template-columns: repeat(2, 1fr); }
+.cam-mosaico.g9 { grid-template-columns: repeat(3, 1fr); }
+.cam-mosaico.g16 { grid-template-columns: repeat(4, 1fr); }
+
+/* ---- celda de cámara ---- */
+.celda-cam {
+  position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #04070a;
+  cursor: pointer; border: 1px solid transparent;
+}
+.celda-cam.activa { border-color: var(--bad); }
+.celda-cam.vacia { display: grid; place-items: center; cursor: default; background: #070b10; }
+.celda-cam.vacia span { font-size: 10.5px; color: var(--txt-3); }
+
+.cc-lienzo {
+  position: absolute; inset: -50%; margin: auto; width: 200%; height: 200%;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+  transition: transform .3s ease-out, filter .3s;
+}
+.cc-lienzo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cc-vineta {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,.55) 100%);
+}
+.cc-sello {
+  position: absolute; top: 6px; left: 8px; font-size: 10px; color: #fff;
+  text-shadow: 0 0 4px #000, 0 1px 2px #000; letter-spacing: .02em;
+}
+.cc-nombre {
+  position: absolute; bottom: 7px; left: 9px; font-size: 15px; font-weight: 700; color: #fff;
+  text-shadow: 0 1px 4px #000;
+}
+.cc-marca {
+  position: absolute; bottom: 8px; right: 9px; font-size: 8.5px; color: rgba(255,255,255,.62);
+  text-shadow: 0 1px 3px #000;
+}
+.cc-ir {
+  position: absolute; top: 6px; right: 8px; font-size: 8.5px; font-weight: 800; letter-spacing: .08em;
+  padding: 2px 5px; border-radius: 4px; background: rgba(239,68,68,.22); color: #fca5a5;
+}
+.celda-cam.offline .cc-ruido {
+  position: absolute; inset: 0; opacity: .5;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px), #0a0f15;
+  animation: ruido .4s steps(2) infinite;
+}
+@keyframes ruido { 0% { background-position: 0 0, 0 0 } 100% { background-position: 0 3px, 2px 0 } }
+.cc-sinsenal { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 4px; }
+.cc-sinsenal b { font-size: 12px; letter-spacing: .1em; color: var(--bad); }
+.cc-sinsenal span { font-size: 9.5px; color: var(--txt-3); }
+
+/* ---- detalle ---- */
+.cam-detalle { position: relative; overflow: hidden; }
+.cam-detalle .celda-cam { aspect-ratio: 16 / 8.6; border: none; cursor: default; }
+.cd-superpuesto { position: absolute; top: 10px; right: 12px; display: flex; align-items: center; gap: 9px; pointer-events: none; }
+.cd-vivo {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px;
+  background: rgba(5,8,12,.72); font-size: 10px; font-weight: 800; letter-spacing: .08em; color: #fff;
+}
+.cd-bitrate { font-size: 9.5px; color: rgba(255,255,255,.75); text-shadow: 0 1px 3px #000; }
+
+.cam-controles { display: flex; align-items: center; gap: 8px; padding: 11px 13px; flex-wrap: wrap; }
+.cam-controles .btn.activo { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.cam-controles .btn:disabled { opacity: .4; cursor: not-allowed; }
+.cd-reloj { font-size: 13px; font-weight: 700; min-width: 76px; text-align: center; }
+.cd-sep { width: 1px; height: 22px; background: var(--line); margin: 0 3px; }
+
+.cam-ficha { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); overflow: hidden; }
+.cam-ficha > div { background: var(--panel-solid); padding: 11px 13px; display: flex; flex-direction: column; gap: 4px; }
+.cam-ficha b { font-size: 12px; font-weight: 620; }
+
+/* ---- línea de tiempo del NVR ---- */
+.cam-timeline { padding: 12px 15px 11px; }
+.ct-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+
+.ltc { position: relative; }
+.ltc-horas { position: relative; height: 13px; }
+.ltc-horas span { position: absolute; transform: translateX(-50%); font-size: 9px; color: var(--txt-3); }
+.ltc-pista {
+  position: relative; height: 40px; border-radius: 7px; overflow: hidden;
+  background: rgba(255,255,255,.05); border: 1px solid var(--line); cursor: pointer; touch-action: none;
+}
+.ltc-grabado { position: absolute; top: 0; bottom: 0; background: linear-gradient(180deg, #2f7fe0, #1e63b8); opacity: .85; }
+.ltc-evento {
+  position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; border-radius: 1px;
+  box-shadow: 0 0 5px currentColor; padding: 0;
+}
+.ltc-evento:hover { width: 5px; margin-left: -2.5px; }
+.ltc-cursor {
+  position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px;
+  background: #fff; box-shadow: 0 0 8px rgba(255,255,255,.9); pointer-events: none;
+}
+.ltc-cursor::before {
+  content: ''; position: absolute; top: -3px; left: -4px;
+  border: 5px solid transparent; border-top-color: #fff;
+}
+.ltc-leyenda { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 9px; }
+.ltcl { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; color: var(--txt-2); }
+.ltcl-barra { width: 14px; height: 7px; border-radius: 2px; background: #2f7fe0; }
+.ltcl-marca { width: 3px; height: 11px; border-radius: 1px; }
+
+/* ---- notificaciones ---- */
+.cam-eventos { width: 268px; flex: none; display: flex; flex-direction: column; padding: 13px; gap: 10px; }
+.ce-head { display: flex; flex-direction: column; gap: 3px; }
+.ce-head b { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; }
+.ce-lista { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 2px; margin: 0 -4px; padding: 0 4px; }
+.ce-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 9px; border-radius: 9px; text-align: left; transition: background .13s; }
+.ce-item:hover { background: rgba(255,255,255,.06); }
+.ce-item .dot { margin-top: 5px; flex: none; }
+.ce-txt { flex: 1; min-width: 0; }
+.ce-txt b { display: block; font-size: 12px; font-weight: 620; }
+.ce-txt .label { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ce-hora { font-size: 11px; color: var(--txt-3); }
+
+/* ---- aviso flotante ---- */
+.cam-aviso {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 16px;
+  font-size: 12.5px; z-index: 40; animation: subir .25s ease-out;
+}
+@keyframes subir { from { opacity: 0; transform: translate(-50%, 12px) } to { opacity: 1; transform: translate(-50%, 0) } }
+
+/* ---- responsive ---- */
+@media (max-width: 1400px) {
+  .cam-ficha { grid-template-columns: repeat(3, 1fr); }
+  .cam-eventos { width: 234px; }
+}
+@media (max-width: 1150px) {
+  .camaras .cam-cuerpo { flex-direction: column; overflow-y: auto; }
+  .cam-lista, .cam-eventos { width: 100%; }
+  .cml-items, .ce-lista { max-height: 260px; }
+  .camaras.pagina { height: auto; min-height: 100vh; }
+}
+@media (max-width: 700px) {
+  .cam-mosaico.g9, .cam-mosaico.g16 { grid-template-columns: repeat(2, 1fr); }
+  .cam-ficha { grid-template-columns: repeat(2, 1fr); }
+}

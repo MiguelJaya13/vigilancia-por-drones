@@ -2,6 +2,7 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Ciudadelas from './pages/Ciudadelas.jsx';
 import Monitoreo from './pages/Monitoreo.jsx';
 import Bitacora from './pages/Bitacora.jsx';
+import Camaras from './pages/Camaras.jsx';
 
 export default function App() {
   return (
@@ -11,6 +12,8 @@ export default function App() {
         <Route path="/monitoreo/:cdId" element={<Monitoreo />} />
         <Route path="/bitacora" element={<Navigate to="/bitacora/cd1" replace />} />
         <Route path="/bitacora/:cdId" element={<Bitacora />} />
+        <Route path="/camaras" element={<Navigate to="/camaras/cd1" replace />} />
+        <Route path="/camaras/:cdId" element={<Camaras />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

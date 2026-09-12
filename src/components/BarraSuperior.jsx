@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { CIUDADELAS } from '../data/ciudadelas.js';
-import { IcoCampana, IcoAjustes, IcoUsuario, IcoGrilla, IcoCalendario, IcoEscudo } from './Icons.jsx';
+import { IcoCampana, IcoAjustes, IcoUsuario, IcoGrilla, IcoCalendario, IcoEscudo, IcoCamara } from './Icons.jsx';
 
 export default function BarraSuperior({ ciudadelaId, alertas = 0 }) {
   const nav = useNavigate();
@@ -11,7 +11,7 @@ export default function BarraSuperior({ ciudadelaId, alertas = 0 }) {
     <header className="panel barra-sup">
       <Link to="/" className="marca">
         <span className="marca-logo"><IcoEscudo width={17} height={17} /></span>
-        <span className="marca-txt">Sky<b>Guard</b></span>
+        <span className="marca-txt">FALCOM<b>360</b></span>
       </Link>
 
       <nav className="cd-switch">
@@ -29,6 +29,9 @@ export default function BarraSuperior({ ciudadelaId, alertas = 0 }) {
 
       <div className="barra-acc">
         <Link to="/" className="btn sm"><IcoGrilla width={14} height={14} /> Ciudadelas</Link>
+        <Link to={`/camaras/${destinoBitacora}`} className="btn sm">
+          <IcoCamara width={14} height={14} /> Cámaras
+        </Link>
         <Link to={`/bitacora/${destinoBitacora}`} className="btn sm">
           <IcoCalendario width={14} height={14} /> Bitácora
         </Link>
