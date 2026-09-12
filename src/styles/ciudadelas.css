@@ -30,7 +30,7 @@
 
 .cd-fila {
   display: grid; align-items: center; gap: 16px;
-  grid-template-columns: 52px 76px minmax(180px, 1.4fr) 118px auto 108px auto;
+  grid-template-columns: 52px 92px minmax(180px, 1.4fr) 118px auto 108px auto;
   padding: 15px 18px; cursor: pointer; text-align: left;
   border-bottom: 1px solid rgba(255,255,255,.05);
   transition: background .15s;
@@ -72,14 +72,14 @@
 
 /* ---- responsive ---- */
 @media (max-width: 1400px) {
-  .cd-fila { grid-template-columns: 52px 76px minmax(160px, 1.2fr) 110px auto auto; }
+  .cd-fila { grid-template-columns: 52px 92px minmax(160px, 1.2fr) 110px auto auto; }
   .cdf-datos { grid-template-columns: repeat(3, 74px); gap: 10px; }
   .cdf-estado { display: none; }
 }
 @media (max-width: 1150px) {
   .cd-kpis { grid-template-columns: repeat(3, 1fr); }
   .cd-fila {
-    grid-template-columns: 52px 76px 1fr auto; row-gap: 14px;
+    grid-template-columns: 52px 92px 1fr auto; row-gap: 14px;
     grid-template-areas: 'cod cro id acc' 'sec sec sec sec' 'datos datos datos datos';
   }
   .cdf-codigo { grid-area: cod; }

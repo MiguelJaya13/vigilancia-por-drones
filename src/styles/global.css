@@ -171,8 +171,4 @@ select.field option { background: var(--panel-solid); }
 
 /* ---------- ícono de dron ---------- */
 .dron-svg { display: block; overflow: visible; }
-.dron-palas { animation: girar-palas .5s linear infinite; transform-origin: center; transform-box: fill-box; }
-.dron-rotores { opacity: .6; }
-@keyframes girar-palas { to { transform: rotate(360deg); } }
 .croquis-dron { color: #ef4444; }
-@media (prefers-reduced-motion: reduce) { .dron-palas { animation: none; } }
