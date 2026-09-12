@@ -176,7 +176,11 @@
 .sm-nombre { flex: 1; font-size: 12px; }
 
 /* ---- marcadores del mapa ---- */
-.marcador-dron { position: relative; cursor: pointer; }
+/* `position: absolute`, nunca `relative`: MapLibre posiciona cada marcador con
+   .maplibregl-marker { position: absolute }, y esta hoja carga despues con la
+   misma especificidad. Con `relative` el marcador dejaba de ubicarse por
+   coordenadas y se apilaba en la esquina del contenedor, oculto tras el panel. */
+.marcador-dron { position: absolute; cursor: pointer; }
 .md-halo {
   position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px;
   border-radius: 50%; background: rgba(34,211,238,.22); border: 1px solid rgba(34,211,238,.55);
