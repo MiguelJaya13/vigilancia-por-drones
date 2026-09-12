@@ -97,7 +97,10 @@ export default function MapaVigilancia({
     return () => { m.remove(); mapa.current = null; listo.current = false; };
   }, []);
 
-  // --- cambio de ciudadela ---
+  // --- cambio de ciudadela (o de sus coordenadas) ---
+  // Se vigilan las coordenadas y no solo el id: si el recinto se reubica,
+  // el mapa tiene que reencuadrar, o los drones se dibujarian lejos del
+  // area visible (aparecian sobre el rio tras mover las ciudadelas).
   useEffect(() => {
     const m = mapa.current;
     if (!m || !listo.current) return;
@@ -105,7 +108,7 @@ export default function MapaVigilancia({
     marcadores.current.clear();
     pintarCiudadela(m, ciudadela, onSeleccionarSector, etiquetasSector);
     m.flyTo({ center: ciudadela.centro, zoom: 17.1, pitch: 45, bearing: -12, duration: 1200 });
-  }, [ciudadela.id]);
+  }, [ciudadela.id, ciudadela.centro[0], ciudadela.centro[1]]);
 
   // --- capas visibles ---
   useEffect(() => {
