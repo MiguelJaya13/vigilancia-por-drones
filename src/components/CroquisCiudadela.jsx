@@ -2,42 +2,43 @@ import { RIESGO_COLOR } from '../data/ciudadelas.js';
 import { DRON_SVG_INTERNO } from './IconoDron.jsx';
 
 // Croquis cuadrado de la ciudadela: el recinto, sus cuatro sectores y los
-// drones recorriendo la secuencia de patrullaje de la misión.
-// El viewBox y la caja son cuadrados, así que nada se deforma.
+// drones recorriendo la secuencia de patrullaje de su propio sector.
+// Cada ícono lleva el código del dron, de modo que el croquis y la ficha
+// de la flota digan lo mismo: el dron del sector B se ve en el sector B.
 
-// Rutas de la demostración, en coordenadas del viewBox (0-100).
-const RONDA_PERIMETRAL = 'M 11,11 H 89 V 89 H 11 Z';
-const BARRIDO = 'M 15,17 H 85 V 33 H 15 V 50 H 85 V 67 H 15 V 83 H 85';
-const DIAGONALES = 'M 15,15 L 85,85 L 85,15 L 15,85 Z';
-const CUADRANTE = {
-  A: 'M 15,15 H 41 V 41 H 15 Z',
-  B: 'M 59,15 H 85 V 41 H 59 Z',
-  C: 'M 15,59 H 41 V 85 H 15 Z',
-  D: 'M 59,59 H 85 V 85 H 59 Z',
-};
+// Límites de cada cuadrante en el viewBox (0-100).
+const CUADRANTE = { A: [8, 8], B: [56, 8], C: [8, 56], D: [56, 56] };
+const LADO = 36;
 
-// La secuencia: cada dron cumple un rol distinto dentro de la misión.
-const SECUENCIA = [
-  { ruta: RONDA_PERIMETRAL, dur: 16, etapas: 4 },
-  { ruta: BARRIDO, dur: 19, etapas: 8 },
-  { ruta: DIAGONALES, dur: 14, etapas: 4 },
-];
+/**
+ * Barrido en serpentina dentro del sector: el patrón real de levantamiento
+ * aéreo. `variante` separa a dos drones que comparten sector.
+ */
+function rutaSector(sector, variante = 0) {
+  const [bx, by] = CUADRANTE[sector] || CUADRANTE.A;
+  const m = 4 + variante * 4.5;
+  const x0 = bx + m, x1 = bx + LADO - m;
+  const y0 = by + m, y1 = by + LADO - m;
+  const ym = (y0 + y1) / 2;
+  return `M ${x0},${y0} H ${x1} V ${ym} H ${x0} V ${y1} H ${x1}`;
+}
 
 const LETRA = { A: [10, 15], B: [90, 15], C: [10, 93], D: [90, 93] };
 const EN_VUELO = new Set(['En vuelo', 'Retornando']);
 
+/** Código corto del dron: 'CD1-D2' → 'D2'. */
+const codigoCorto = (id) => id.split('-').pop();
+
 /**
- * Avanza y se detiene en cada waypoint, como un vuelo por waypoints real:
+ * Avanza y se detiene en cada waypoint, como un vuelo programado:
  * el 80% de cada tramo desplazándose y el 20% en punto fijo.
  */
 function porEtapas(n) {
   const puntos = [], tiempos = [];
   for (let i = 0; i <= n; i++) {
     const p = (i / n).toFixed(4);
-    // Llega al waypoint…
     puntos.push(p);
     tiempos.push((i === 0 ? 0 : (i - 0.2) / n).toFixed(4));
-    // …y se queda en punto fijo hasta que arranca el tramo siguiente.
     puntos.push(p);
     tiempos.push((i / n).toFixed(4));
   }
@@ -46,16 +47,27 @@ function porEtapas(n) {
   return { keyPoints: puntos.join(';'), keyTimes: tiempos.join(';') };
 }
 
+const ETAPAS = 5;
+
 export default function CroquisCiudadela({ ciudadela, tamano = 92 }) {
   const enVuelo = ciudadela.drones.filter((d) => EN_VUELO.has(d.estado));
   const enBase = ciudadela.drones.length - enVuelo.length;
+  const { keyPoints, keyTimes } = porEtapas(ETAPAS);
 
-  // Los tres primeros cubren la ciudadela completa; el resto barre su sector.
-  const plan = enVuelo.map((d, i) => (
-    i < SECUENCIA.length
-      ? { ...SECUENCIA[i], id: d.id }
-      : { ruta: CUADRANTE[d.sector], dur: 12, etapas: 4, id: d.id }
-  ));
+  // Cuántos drones lleva ya cada sector, para separarlos si coinciden.
+  const usados = {};
+  const plan = enVuelo.map((d, i) => {
+    const v = usados[d.sector] = (usados[d.sector] ?? -1) + 1;
+    return {
+      id: d.id,
+      codigo: codigoCorto(d.id),
+      nombre: d.nombre,
+      sector: d.sector,
+      ruta: rutaSector(d.sector, v),
+      dur: 13 + v * 3 + (i % 3),
+      inicio: -3.1 * i,
+    };
+  });
 
   return (
     <svg
@@ -92,35 +104,40 @@ export default function CroquisCiudadela({ ciudadela, tamano = 92 }) {
         );
       })}
 
-      {/* trazas de la secuencia */}
+      {/* traza del barrido de cada dron */}
       {plan.map((p) => (
         <path key={`ruta-${p.id}`} d={p.ruta} fill="none"
-          stroke="rgba(255,255,255,.14)" strokeWidth="0.7" strokeDasharray="2 2.5" />
+          stroke="rgba(255,255,255,.13)" strokeWidth="0.7" strokeDasharray="2 2.5" />
       ))}
 
       {/* base de despegue */}
       <circle cx="50" cy="50" r="3.4" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="1" />
       <circle cx="50" cy="50" r="1.3" fill="rgba(255,255,255,.6)" />
 
-      {/* drones recorriendo su etapa de la misión */}
-      {plan.map((p, i) => {
-        const { keyPoints, keyTimes } = porEtapas(p.etapas);
+      {plan.map((p) => {
+        const motion = (extra) => (
+          <animateMotion
+            dur={`${p.dur}s`} begin={`${p.inicio}s`} repeatCount="indefinite"
+            path={p.ruta} calcMode="linear" keyPoints={keyPoints} keyTimes={keyTimes}
+            {...extra}
+          />
+        );
         return (
           <g key={p.id} className="croquis-dron">
+            <title>{p.nombre} · sector {p.sector}</title>
+
+            {/* el ícono gira hacia el sentido de vuelo */}
             <g>
-              <animateMotion
-                dur={`${p.dur}s`}
-                repeatCount="indefinite"
-                path={p.ruta}
-                rotate="auto"
-                calcMode="linear"
-                keyPoints={keyPoints}
-                keyTimes={keyTimes}
-                begin={`${i * -3.1}s`}
-              />
-              {/* el ícono apunta al norte; +90° lo alinea con el sentido de vuelo */}
+              {motion({ rotate: 'auto' })}
+              {/* el dibujo apunta al norte; +90° lo alinea con el eje de avance */}
               <g transform="rotate(90) translate(-5,-5) scale(0.4167)"
                 dangerouslySetInnerHTML={{ __html: DRON_SVG_INTERNO }} />
+            </g>
+
+            {/* el rótulo viaja con el dron pero se mantiene horizontal */}
+            <g>
+              {motion()}
+              <text className="croquis-rotulo" x="0" y="-7" textAnchor="middle">{p.codigo}</text>
             </g>
           </g>
         );

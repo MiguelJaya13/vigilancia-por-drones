@@ -172,3 +172,8 @@ select.field option { background: var(--panel-solid); }
 /* ---------- ícono de dron ---------- */
 .dron-svg { display: block; overflow: visible; }
 .croquis-dron { color: #ef4444; }
+.croquis-rotulo {
+  font-size: 6.2px; font-weight: 800; fill: #fff;
+  stroke: rgba(4,8,12,.85); stroke-width: 1.6px; paint-order: stroke fill;
+  letter-spacing: .02em;
+}
