@@ -34,6 +34,9 @@ export function useDroneSim(ciudadela, { activo = true } = {}) {
   const [flota, setFlota] = useState(() => inicializar(ciudadela));
   const [registro, setRegistro] = useState(() => registroInicial(ciudadela));
   const tickRef = useRef(0);
+  const flotaRef = useRef(flota);
+
+  useEffect(() => { flotaRef.current = flota; }, [flota]);
 
   // Reinicia al cambiar de ciudadela.
   useEffect(() => {
@@ -81,9 +84,8 @@ export function useDroneSim(ciudadela, { activo = true } = {}) {
 
       // Nueva entrada del registro cada ~7 s.
       if (t % 7 === 0) {
-        setFlota((f) => {
-          const activos = f.filter((d) => VOLANDO.has(d.estado));
-          if (!activos.length) return f;
+        const activos = flotaRef.current.filter((d) => VOLANDO.has(d.estado));
+        if (activos.length) {
           const d = activos[Math.floor(Math.random() * activos.length)];
           const e = EVENTOS_SIM[Math.floor(Math.random() * EVENTOS_SIM.length)];
           setRegistro((r) => [{
@@ -94,8 +96,7 @@ export function useDroneSim(ciudadela, { activo = true } = {}) {
             texto: e.txt,
             tipo: e.tipo,
           }, ...r].slice(0, 60));
-          return f;
-        });
+        }
       }
     }, 1000);
     return () => clearInterval(id);

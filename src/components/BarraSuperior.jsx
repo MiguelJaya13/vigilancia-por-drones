@@ -4,6 +4,8 @@ import { IcoCampana, IcoAjustes, IcoUsuario, IcoGrilla, IcoCalendario, IcoEscudo
 
 export default function BarraSuperior({ ciudadelaId, alertas = 0 }) {
   const nav = useNavigate();
+  // En la vista general no hay ciudadela activa: la bitácora abre en la primera.
+  const destinoBitacora = ciudadelaId || CIUDADELAS[0].id;
 
   return (
     <header className="panel barra-sup">
@@ -27,7 +29,7 @@ export default function BarraSuperior({ ciudadelaId, alertas = 0 }) {
 
       <div className="barra-acc">
         <Link to="/" className="btn sm"><IcoGrilla width={14} height={14} /> Ciudadelas</Link>
-        <Link to={`/bitacora/${ciudadelaId}`} className="btn sm">
+        <Link to={`/bitacora/${destinoBitacora}`} className="btn sm">
           <IcoCalendario width={14} height={14} /> Bitácora
         </Link>
         <button className="icon-btn" title="Alertas">
