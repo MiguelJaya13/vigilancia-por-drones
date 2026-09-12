@@ -37,10 +37,6 @@ function FilaCiudadela({ cd, resumen }) {
           <span className="label">Drones</span>
         </div>
         <div className="cdf-dato">
-          <b className="mono">{cd.camaras}</b>
-          <span className="label">Cámaras</span>
-        </div>
-        <div className="cdf-dato">
           <b className="mono">{cd.viviendas}</b>
           <span className="label">Viviendas</span>
         </div>
