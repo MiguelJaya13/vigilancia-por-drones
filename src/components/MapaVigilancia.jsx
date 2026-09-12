@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { RIESGO_COLOR } from '../data/ciudadelas.js';
+import { dronSVG } from './IconoDron.jsx';
 
 // Imágenes satelitales de Esri World Imagery: sin API key ni tarjeta,
 // suficiente para demo y prototipo.
@@ -47,10 +48,7 @@ function elementoDron(dron, activo) {
   el.innerHTML = `
     <div class="md-halo"></div>
     <div class="md-icono" style="transform: rotate(${dron.rumbo || 0}deg)">
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
-           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 3.5 17 20l-5-3.2L7 20 12 3.5Z" fill="currentColor" fill-opacity=".9"/>
-      </svg>
+      ${dronSVG(20)}
     </div>
     <div class="md-etiqueta">
       <b>${dron.nombre}</b>

@@ -1,7 +1,8 @@
 import { RIESGO_COLOR } from '../data/ciudadelas.js';
+import { DRON_SVG_INTERNO } from './IconoDron.jsx';
 
 // Croquis cuadrado de la ciudadela: el recinto, sus cuatro sectores y un
-// punto rojo por dron recorriendo su ruta de patrullaje.
+// ícono de dron en rojo por cada aparato recorriendo su ruta de patrullaje.
 // El viewBox es cuadrado y la caja también, así nada se deforma.
 
 // Recorrido de patrullaje dentro de cada cuadrante (coordenadas del viewBox).
@@ -61,20 +62,25 @@ export default function CroquisCiudadela({ ciudadela, tamano = 76 }) {
           stroke="rgba(255,255,255,.16)" strokeWidth="0.8" strokeDasharray="2 2.5" />
       ))}
 
-      {/* drones: punto rojo recorriendo la ruta */}
-      {enVuelo.map((d, i) => (
-        <g key={d.id}>
-          <circle r="5.2" fill="#ef4444" opacity=".22">
-            <animateMotion dur={`${11 + (i % 4) * 2.5}s`} repeatCount="indefinite"
-              path={RUTAS[d.sector]} begin={`${i * -2.4}s`} rotate="auto" />
-            <animate attributeName="r" values="4;7;4" dur="1.8s" repeatCount="indefinite" />
-          </circle>
-          <circle r="2.9" fill="#ef4444" stroke="#1a0505" strokeWidth="0.7">
-            <animateMotion dur={`${11 + (i % 4) * 2.5}s`} repeatCount="indefinite"
-              path={RUTAS[d.sector]} begin={`${i * -2.4}s`} rotate="auto" />
-          </circle>
-        </g>
-      ))}
+      {/* drones: el mismo icono del mapa, en rojo, recorriendo la ruta */}
+      {enVuelo.map((d, i) => {
+        const dur = `${11 + (i % 4) * 2.5}s`;
+        const desfase = `${i * -2.4}s`;
+        return (
+          <g key={d.id} className="croquis-dron">
+            <g>
+              <animateMotion dur={dur} repeatCount="indefinite" path={RUTAS[d.sector]} begin={desfase} />
+              <circle r="6" fill="#ef4444" opacity=".2">
+                <animate attributeName="r" values="4.5;7.5;4.5" dur="1.9s" repeatCount="indefinite" />
+              </circle>
+              <g
+                transform="translate(-5,-5) scale(0.4167)"
+                dangerouslySetInnerHTML={{ __html: DRON_SVG_INTERNO }}
+              />
+            </g>
+          </g>
+        );
+      })}
 
       {/* base de despegue */}
       <circle cx="50" cy="50" r="3.4" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="1" />
