@@ -5,7 +5,7 @@ import '../sim/simulador.dart';
 import '../tema.dart';
 import 'comunes.dart';
 
-Color _colorEvento(TipoEvento t) => switch (t) {
+Color colorEvento(TipoEvento t) => switch (t) {
       TipoEvento.info => Paleta.acento,
       TipoEvento.alerta => Paleta.alerta,
       TipoEvento.critico => Paleta.critico,
@@ -13,113 +13,114 @@ Color _colorEvento(TipoEvento t) => switch (t) {
 
 int _segundosDe(DateTime d) => d.hour * 3600 + d.minute * 60 + d.second;
 
-/// Barra flotante con el último evento; se despliega al tocarla.
-class RegistroActividad extends StatefulWidget {
-  const RegistroActividad({super.key, required this.eventos});
+/// Registro de actividad como panel lateral. Se abre solo cuando el operador
+/// lo pide, para no robarle espacio permanente al mapa.
+class PanelActividad extends StatelessWidget {
+  const PanelActividad({super.key, required this.sim, required this.onCerrar});
 
-  final List<EventoRegistro> eventos;
-
-  @override
-  State<RegistroActividad> createState() => _RegistroActividadState();
-}
-
-class _RegistroActividadState extends State<RegistroActividad> {
-  bool _abierto = false;
+  final Simulador sim;
+  final VoidCallback onCerrar;
 
   @override
   Widget build(BuildContext context) {
-    final ultimo = widget.eventos.isEmpty ? null : widget.eventos.first;
-    final alertas =
-        widget.eventos.where((e) => e.tipo != TipoEvento.info).length;
+    return ListenableBuilder(
+      listenable: sim,
+      builder: (context, _) {
+        final eventos = sim.registro;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Panel(
-          padding: const EdgeInsets.fromLTRB(14, 8, 9, 8),
-          hijo: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Etiqueta('Registro de actividad'),
-              const SizedBox(width: 12),
-              if (ultimo != null) ...[
-                Punto(_colorEvento(ultimo.tipo), tam: 7, pulsa: true),
-                const SizedBox(width: 7),
-                Text(relojDia(_segundosDe(ultimo.hora)),
-                    style: mono(tam: 11, color: Paleta.texto2)),
-                const SizedBox(width: 8),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 300),
-                  child: Text(
-                    '${ultimo.dron} — ${ultimo.texto}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12),
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 12, 12),
+          child: Panel(
+            padding: EdgeInsets.zero,
+            hijo: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  padding: const EdgeInsets.fromLTRB(13, 11, 8, 11),
+                  decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Paleta.linea)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text('Registro de actividad',
+                            style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w700)),
+                      ),
+                      if (sim.alertas > 0)
+                        Ficha(
+                          texto: '${sim.alertas}',
+                          icono: Icons.warning_amber_rounded,
+                          color: Paleta.alerta,
+                        ),
+                      IconButton(
+                        onPressed: onCerrar,
+                        icon: const Icon(Icons.close, size: 17),
+                        visualDensity: VisualDensity.compact,
+                        tooltip: 'Cerrar',
+                      ),
+                    ],
                   ),
                 ),
-              ],
-              if (alertas > 0) ...[
-                const SizedBox(width: 10),
-                Ficha(
-                  texto: '$alertas',
-                  color: Paleta.alerta,
-                  icono: Icons.warning_amber_rounded,
+                Expanded(
+                  child: eventos.isEmpty
+                      ? const Center(
+                          child: Text('Sin eventos todavía.',
+                              style:
+                                  TextStyle(fontSize: 12, color: Paleta.texto3)),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          itemCount: eventos.length,
+                          itemBuilder: (_, i) {
+                            final e = eventos[i];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Punto(colorEvento(e.tipo), tam: 7),
+                                  ),
+                                  const SizedBox(width: 9),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(e.texto,
+                                            style:
+                                                const TextStyle(fontSize: 12.5)),
+                                        const SizedBox(height: 3),
+                                        Row(
+                                          children: [
+                                            Text(relojDia(_segundosDe(e.hora)),
+                                                style: mono(
+                                                    tam: 10,
+                                                    color: Paleta.texto3)),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Etiqueta(
+                                                  '${e.dron} · Sector ${e.sector}'),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                 ),
               ],
-              const SizedBox(width: 10),
-              BotonAccion(
-                texto: _abierto ? 'Cerrar' : 'Ver todo',
-                onTap: () => setState(() => _abierto = !_abierto),
-              ),
-            ],
-          ),
-        ),
-        if (_abierto) ...[
-          const SizedBox(height: 8),
-          Panel(
-            padding: const EdgeInsets.all(6),
-            hijo: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 300, maxWidth: 620),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.eventos.length,
-                itemBuilder: (_, i) {
-                  final e = widget.eventos[i];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Punto(_colorEvento(e.tipo), tam: 7),
-                        ),
-                        const SizedBox(width: 9),
-                        Text(relojDia(_segundosDe(e.hora)),
-                            style: mono(tam: 11, color: Paleta.texto3)),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(e.texto,
-                                  style: const TextStyle(fontSize: 12)),
-                              const SizedBox(height: 2),
-                              Etiqueta('${e.dron} · Sector ${e.sector}'),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
             ),
           ),
-        ],
-      ],
+        );
+      },
     );
   }
 }
